@@ -1,0 +1,162 @@
+* User Interface
+** Hide menubar
+#+begin_src emacs-lisp
+(menu-bar-mode 0)
+#+end_src
+** Hide Toolbar and Scrollbar
+#+begin_src emacs-lisp
+    (tool-bar-mode 0)
+    (scroll-bar-mode 0)
+#+end_src
+** No inhibit startup message
+#+begin_src emacs-lisp
+(setq inhibit-startup-screen t)
+#+end_src
+** set number
+#+begin_src emacs-lisp
+(column-number-mode)
+(global-display-line-numbers-mode t)
+#+end_src
+** Theme
+#+begin_src emacs-lisp
+(load-theme 'ef-dark t)
+#+end_src
+** Font Configuration
+#+begin_src emacs-lisp
+  (set-face-attribute 'default nil :font "Noto Sans Mono" :height 200)
+#+end_src
+** Cursor
+#+begin_src emacs-lisp
+(setq-default cursor-type 'bar)
+#+end_src
+
+* Behavior
+** No (Backup, Lock, Autosave)
+#+begin_src emacs-lisp
+(setq
+make-backup-files nil
+auto-save-default nil
+create-lockfiles nil)
+#+end_src
+** Y or N instead of Yes or No
+#+begin_src emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+end_src
+** Electric auto pair mode
+#+begin_src emacs-lisp
+(electric-pair-mode 1)
+#+end_src
+** Registers
+#+begin_src emacs-lisp
+(set-register ?E '(file . "/home/linux/.emacs.d/config.org"))
+(set-register ?I '(file . "/home/linux/.config/i3/config"))
+#+end_src
+** Buffers
+*** Buffer switching
+#+begin_src emacs-lisp
+   (global-set-key [(meta shift j)] 'previous-buffer)
+   (global-set-key [(meta shift l)] 'next-buffer)
+#+end_src
+*** Buffer kill
+#+begin_src emacs-lisp
+   (global-set-key (kbd "C-x K") 'kill-this-buffer)
+#+end_src
+
+* Use package
+** Installation
+#+begin_src emacs-lisp
+(require 'package)
+
+(setq package-archives '(("melpa" . "https://melpa.org/packages/")
+			("org" . "https://orgmode.org/elpa/")
+			("elpa" . "https://elpa.gnu.org/packages/")))
+
+(package-initialize)
+(unless package-archive-contents
+  (package-refresh-contents))
+
+;; Initialize use package on non-linux based system
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+
+(require 'use-package)
+(setq use-package-always-ensure t)
+#+end_src
+* Third party packages
+** Nerd icons
+#+begin_src emacs-lisp
+(use-package nerd-icons)
+#+end_src
+** DOOM modeline(statusBar)
+#+begin_src emacs-lisp
+(use-package doom-modeline
+  :ensure t
+  :init (doom-modeline-mode 1))
+#+end_src
+** Which Key 
+# which key is show possible keys
+#+begin_src emacs-lisp
+(use-package which-key
+:init (which-key-mode)
+:diminish which-key-mode
+:config
+(setq which-key-idle-delay 0.1))
+#+end_src
+** Vertico
+# vertico is show available option
+#+begin_src emacs-lisp
+  ;; Enable vertico
+  (use-package vertico
+    :init
+    (vertico-mode)
+
+    ;; Different scroll margin
+    ;; (setq vertico-scroll-margin 0)
+
+    ;; Show more candidates
+    ;; (setq vertico-count 20)
+
+    ;; Grow and shrink the Vertico minibuffer
+    ;; (setq vertico-resize t)
+
+    ;; Optionally enable cycling for `vertico-next' and `vertico-previous'.
+    (setq vertico-cycle t)
+    )
+
+  ;; Persist history over Emacs restarts. Vertico sorts by history position.
+  (use-package savehist
+    :init
+    (savehist-mode))
+
+  ;; Optionally use the `orderless' completion style.
+  (use-package orderless
+    :init
+    ;; Configure a custom style dispatcher (see the Consult wiki)
+    ;; (setq orderless-style-dispatchers '(+orderless-consult-dispatch orderless-affix-dispatch)
+    ;;       orderless-component-separator #'orderless-escapable-split-on-space)
+    (setq completion-styles '(orderless basic)
+	  completion-category-defaults nil
+	  completion-category-overrides '((file (styles partial-completion)))))
+
+  ;; Enable rich annotations using the Marginalia package
+  (use-package marginalia
+    ;; Bind `marginalia-cycle' locally in the minibuffer.  To make the binding
+    ;; available in the *Completions* buffer, add it to the
+    ;; `completion-list-mode-map'.
+    :bind (:map minibuffer-local-map
+	   ("M-A" . marginalia-cycle))
+
+    ;; The :init section is always executed.
+    :init
+
+    ;; Marginalia must be activated in the :init section of use-package such that
+    ;; the mode gets enabled right away. Note that this forces loading the
+    ;; package.
+    (marginalia-mode))
+#+end_src
+** Rainbow delimiter 
+# rainbow delimiter is color a border make diffrence
+#+begin_src emacs-lisp
+(use-package rainbow-delimiters
+  :hook (prog-mode . rainbow-delimiters-mode))
+#+end_src
