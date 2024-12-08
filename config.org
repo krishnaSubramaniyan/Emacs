@@ -17,13 +17,13 @@
 (column-number-mode)
 (global-display-line-numbers-mode t)
 #+end_src
-** Theme
+** Themes
 #+begin_src emacs-lisp
-(load-theme 'ef-dark t)
+  ;(load-theme wombat t)
 #+end_src
 ** Font Configuration
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :font "Noto Sans Mono" :height 200)
+  (set-face-attribute 'default nil :font "Ubuntu Mono" :height 230)
 #+end_src
 ** Cursor
 #+begin_src emacs-lisp
@@ -31,6 +31,10 @@
 #+end_src
 
 * Behavior
+** Ignore beep sound
+#+begin_src emacs-lisp
+  (setq ring-bell-function 'ignore)
+#+end_src
 ** No (Backup, Lock, Autosave)
 #+begin_src emacs-lisp
 (setq
@@ -44,22 +48,38 @@ create-lockfiles nil)
 #+end_src
 ** Electric auto pair mode
 #+begin_src emacs-lisp
-(electric-pair-mode 1)
+  (electric-pair-mode 1)
+#+end_src
+** Auto revert
+#+begin_src emacs-lisp
+  ;;all files
+  (global-auto-revert-mode 1)
+
+  ;;dired buffers
+  (setq global-auto-revert-non-file-buffers t)
+
+  ;;disable verbose
+  (setq auto-revert-verbose nil)
 #+end_src
 ** Registers
 #+begin_src emacs-lisp
-(set-register ?E '(file . "/home/linux/.emacs.d/config.org"))
-(set-register ?I '(file . "/home/linux/.config/i3/config"))
+  (set-register ?E '(file . "~/.emacs.d/config.org"))
+  (set-register ?I '(file . "~/.config/i3/config"))
+  (set-register ?P '(file . "~/plan.org"))
 #+end_src
 ** Buffers
 *** Buffer switching
 #+begin_src emacs-lisp
-   (global-set-key [(meta shift j)] 'previous-buffer)
-   (global-set-key [(meta shift l)] 'next-buffer)
+  (global-set-key [(meta shift j)] 'previous-buffer)
+  (global-set-key [(meta shift l)] 'next-buffer)
 #+end_src
 *** Buffer kill
 #+begin_src emacs-lisp
    (global-set-key (kbd "C-x K") 'kill-this-buffer)
+#+end_src
+*** Save buffers kill terminal
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-q") 'save-buffers-kill-terminal)
 #+end_src
 
 * Use package
@@ -82,16 +102,43 @@ create-lockfiles nil)
 (require 'use-package)
 (setq use-package-always-ensure t)
 #+end_src
+** Dired
+#+begin_src emacs-lisp
+  (use-package dired
+    :ensure nil
+    ;:hook (dired-mode . dired-hide-details-mode)
+    :config
+    (setq dired-listing-switches "-agho --group-directories-first")
+    (setq dired-kill-when-opening-new-dired-buffer t)
+
+    (setq dired-recursive-deletes 'always)
+    (setq dired-recursive-copies 'always)
+    )
+#+end_src
 * Third party packages
 ** Nerd icons
 #+begin_src emacs-lisp
 (use-package nerd-icons)
 #+end_src
-** DOOM modeline(statusBar)
+** DOOM
+*** DOOM theme
 #+begin_src emacs-lisp
-(use-package doom-modeline
-  :ensure t
-  :init (doom-modeline-mode 1))
+      (use-package doom-themes)
+#+end_src
+*** DOOM modeline(statusBar)
+#+begin_src emacs-lisp
+  (use-package doom-modeline
+    :init (doom-modeline-mode 1)
+    :config
+    ;; set height
+    (setq doom-modeline-height 40)
+    ;;set width
+    (setq doom-modeline-bar-width 10)
+    ;;disable hud
+    (setq doom-modeline-hud nil)
+    ;;window width
+    (setq doom-modeline-window-width-limit 100)
+    )
 #+end_src
 ** Which Key 
 # which key is show possible keys
@@ -100,10 +147,10 @@ create-lockfiles nil)
 :init (which-key-mode)
 :diminish which-key-mode
 :config
-(setq which-key-idle-delay 0.1))
-#+end_src
+(setq which-key-idle-delay 0.6))
+#+End_Src
 ** Vertico
-# vertico is show available option
+# Vertico is show available option
 #+begin_src emacs-lisp
   ;; Enable vertico
   (use-package vertico
@@ -160,3 +207,42 @@ create-lockfiles nil)
 (use-package rainbow-delimiters
   :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
+** Emmet-mode
+#+begin_src emacs-lisp
+(require 'emmet-mode)
+;; Enable emmet-mode in HTML and CSS
+(add-hook 'html-mode-hook #'emmet-mode)
+(add-hook 'css-mode-hook #'emmet-mode)
+;; Optional: Configure emmet-mode (e.g., JSX className)
+(setq emmet-expand-jsx-className? t)
+#+end_src
+* My Functions
+** Random-doom-theme
+#+begin_src emacs-lisp
+  ;themes list
+  (defvar my-favourite-themes
+      '(doom-gruvbox
+	doom-solarized-dark-high-contrast
+	doom-Iosvkem
+	doom-dark+
+	doom-nord-aurora
+	doom-tokyo-night
+	doom-material
+	doom-dracula
+	doom-palenight)
+      )
+
+    ;function
+    (defun load-random-theme()
+      (let ((random-theme (nth (random (length my-favourite-themes)) my-favourite-themes)))
+	;disable previous theme
+	(mapc #'disable-theme custom-enabled-themes)
+	(load-theme random-theme t)
+	(message "Loading theme: %s" random-theme)
+	)
+      )
+
+    ;call function
+    (load-random-theme)
+#+end_src
+
