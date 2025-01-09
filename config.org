@@ -29,9 +29,8 @@
 #+begin_src emacs-lisp
 (setq-default cursor-type 'bar)
 #+end_src
-
 * Behavior
-** Ignore beep sound
+** Mute beep sound
 #+begin_src emacs-lisp
   (setq ring-bell-function 'ignore)
 #+end_src
@@ -81,7 +80,11 @@ create-lockfiles nil)
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-q") 'save-buffers-kill-terminal)
 #+end_src
-
+** KeyBinds
+*** Compile
+  #+begin_src emacs-lisp
+    (global-set-key (kbd "C-c c") 'compile)
+  #+End_src
 * Use package
 ** Installation
 #+begin_src emacs-lisp
@@ -106,7 +109,7 @@ create-lockfiles nil)
 #+begin_src emacs-lisp
   (use-package dired
     :ensure nil
-    ;:hook (dired-mode . dired-hide-details-mode)
+    :hook (dired-mode . dired-hide-details-mode)
     :config
     (setq dired-listing-switches "-agho --group-directories-first")
     (setq dired-kill-when-opening-new-dired-buffer t)
@@ -130,7 +133,7 @@ create-lockfiles nil)
   (use-package doom-modeline
     :init (doom-modeline-mode 1)
     :config
-    ;; set height
+    ;;set height
     (setq doom-modeline-height 40)
     ;;set width
     (setq doom-modeline-bar-width 10)
@@ -208,6 +211,7 @@ create-lockfiles nil)
   :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
 ** Emmet-mode
+# HTML,CSS package
 #+begin_src emacs-lisp
 (require 'emmet-mode)
 ;; Enable emmet-mode in HTML and CSS
@@ -217,32 +221,55 @@ create-lockfiles nil)
 (setq emmet-expand-jsx-className? t)
 #+end_src
 * My Functions
-** Random-doom-theme
+** Load-random-theme
 #+begin_src emacs-lisp
-  ;themes list
-  (defvar my-favourite-themes
-      '(doom-gruvbox
-	doom-solarized-dark-high-contrast
-	doom-Iosvkem
-	doom-dark+
-	doom-nord-aurora
-	doom-tokyo-night
-	doom-material
-	doom-dracula
-	doom-palenight)
-      )
+  ;;theme list
+  (defvar themes
+    '(
+      doom-solarized-dark-high-contrast
+      doom-gruvbox
+      doom-dark+
+      doom-Iosvkem
+      doom-nord-aurora
+      doom-tokyo-night
+      doom-material
+      doom-dracula
+      doom-palenight)
+    )
 
-    ;function
-    (defun load-random-theme()
-      (let ((random-theme (nth (random (length my-favourite-themes)) my-favourite-themes)))
-	;disable previous theme
-	(mapc #'disable-theme custom-enabled-themes)
-	(load-theme random-theme t)
-	(message "Loading theme: %s" random-theme)
-	)
-      )
+  ;;function declaretion
+  (defun load-random-theme()
+    (let ( (randomTheme (nth (random (length themes)) themes)) )
+      ;;disable previous theme
+      (mapc #'disable-theme custom-enabled-themes)
+      (load-theme randomTheme t)
+      (message "Loading theme %s" randomTheme)
+    )
+  )
 
-    ;call function
-    (load-random-theme)
+  ;;function call
+  (load-random-theme)
 #+end_src
-
+** Java-println
+#+begin_src emacs-lisp
+  (defun java-println ()
+    (interactive)
+    (insert "System.out.println();")
+   )
+  
+  (global-set-key (kbd "C-c p") 'java-println)
+#+end_src
+** Disable linenumber specific buffers
+#+begin_src emacs-lisp
+  (add-hook 'after-change-major-mode-hook
+	    (lambda ()
+	      (when (or
+		     (string-prefix-p "*scratch*" (buffer-name))
+		     (string-prefix-p "*compilation*" (buffer-name))
+		     (string-prefix-p "*eshell*" (buffer-name))
+		    )
+		(display-line-numbers-mode 0)
+	      )
+	    )
+  )
+#+end_src
