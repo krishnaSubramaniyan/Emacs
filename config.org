@@ -1,21 +1,21 @@
 * User Interface
 ** Hide menubar
 #+begin_src emacs-lisp
-(menu-bar-mode 0)
+  (menu-bar-mode 0)
 #+end_src
 ** Hide Toolbar and Scrollbar
 #+begin_src emacs-lisp
-    (tool-bar-mode 0)
-    (scroll-bar-mode 0)
+  (tool-bar-mode 0)
+  (scroll-bar-mode 0)
 #+end_src
 ** No inhibit startup message
 #+begin_src emacs-lisp
-(setq inhibit-startup-screen t)
+  (setq inhibit-startup-screen t)
 #+end_src
 ** set number
 #+begin_src emacs-lisp
-(column-number-mode)
-(global-display-line-numbers-mode t)
+  (column-number-mode)
+  (global-display-line-numbers-mode t)
 #+end_src
 ** Themes
 #+begin_src emacs-lisp
@@ -36,14 +36,14 @@
 #+end_src
 ** No (Backup, Lock, Autosave)
 #+begin_src emacs-lisp
-(setq
-make-backup-files nil
-auto-save-default nil
-create-lockfiles nil)
+  (setq
+   make-backup-files nil
+  auto-save-default nil
+  create-lockfiles nil)
 #+end_src
 ** Y or N instead of Yes or No
 #+begin_src emacs-lisp
-(fset 'yes-or-no-p 'y-or-n-p)
+  (fset 'yes-or-no-p 'y-or-n-p)
 #+end_src
 ** Electric auto pair mode
 #+begin_src emacs-lisp
@@ -62,8 +62,8 @@ create-lockfiles nil)
 #+end_src
 ** Registers
 #+begin_src emacs-lisp
-  (set-register ?E '(file . "~/.emacs.d/config.org"))
-  (set-register ?I '(file . "~/.config/i3/config"))
+  (set-register ?E '(file . "~/.config/emacs/default/config.org"))
+  (set-register ?I '(file . "~/.config/i3/config_lenovo"))
   (set-register ?P '(file . "~/plan.org"))
 #+end_src
 ** Buffers
@@ -74,17 +74,51 @@ create-lockfiles nil)
 #+end_src
 *** Buffer kill
 #+begin_src emacs-lisp
-   (global-set-key (kbd "C-x K") 'kill-this-buffer)
+  (global-set-key (kbd "C-x K") 'kill-this-buffer)
 #+end_src
 *** Save buffers kill terminal
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-q") 'save-buffers-kill-terminal)
 #+end_src
+*** IBuffers
+#+begin_src emacs-lisp
+  ;; (setq ibuffer-filter-groups
+  ;;       '(
+  ;; 	("Emacs"
+  ;; 	 (name . "^\\*scratch\\*$")
+  ;; 	 (name . "^\\*Messages\\*$"))
+  ;; 	("Java"  (mode . "java-mode"))
+  ;; 	("Dired" (mode . "dired-mode"))
+  ;; 	("Other" (".*"))
+  ;; 	)
+  ;;  )
+#+end_src
 ** KeyBinds
 *** Compile
-  #+begin_src emacs-lisp
-    (global-set-key (kbd "C-c c") 'compile)
-  #+End_src
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c c") 'compile)
+#+End_src
+*** IBuffer
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-x C-b") 'ibuffer)
+#+end_src
+*** Random-load-theme
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c t") 'load-random-theme)
+#+end_src
+** Dired
+#+begin_src emacs-lisp
+  (use-package dired
+    :ensure nil
+    :hook (dired-mode . dired-hide-details-mode)
+    :config
+    (setq dired-listing-switches "-agho --group-directories-first")
+    (setq dired-kill-when-opening-new-dired-buffer t)
+
+    (setq dired-recursive-deletes 'always)
+    (setq dired-recursive-copies 'always)
+  )
+#+end_src
 * Use package
 ** Installation
 #+begin_src emacs-lisp
@@ -105,28 +139,15 @@ create-lockfiles nil)
 (require 'use-package)
 (setq use-package-always-ensure t)
 #+end_src
-** Dired
-#+begin_src emacs-lisp
-  (use-package dired
-    :ensure nil
-    :hook (dired-mode . dired-hide-details-mode)
-    :config
-    (setq dired-listing-switches "-agho --group-directories-first")
-    (setq dired-kill-when-opening-new-dired-buffer t)
-
-    (setq dired-recursive-deletes 'always)
-    (setq dired-recursive-copies 'always)
-    )
-#+end_src
 * Third party packages
 ** Nerd icons
 #+begin_src emacs-lisp
-(use-package nerd-icons)
+  (use-package nerd-icons)
 #+end_src
 ** DOOM
 *** DOOM theme
 #+begin_src emacs-lisp
-      (use-package doom-themes)
+  (use-package doom-themes)
 #+end_src
 *** DOOM modeline(statusBar)
 #+begin_src emacs-lisp
@@ -146,11 +167,11 @@ create-lockfiles nil)
 ** Which Key 
 # which key is show possible keys
 #+begin_src emacs-lisp
-(use-package which-key
-:init (which-key-mode)
-:diminish which-key-mode
-:config
-(setq which-key-idle-delay 0.6))
+  (use-package which-key
+  :init (which-key-mode)
+  :diminish which-key-mode
+  :config
+  (setq which-key-idle-delay 0.6))
 #+End_Src
 ** Vertico
 # Vertico is show available option
@@ -207,18 +228,25 @@ create-lockfiles nil)
 ** Rainbow delimiter 
 # rainbow delimiter is color a border make diffrence
 #+begin_src emacs-lisp
-(use-package rainbow-delimiters
-  :hook (prog-mode . rainbow-delimiters-mode))
+  (use-package rainbow-delimiters
+    :hook (prog-mode . rainbow-delimiters-mode))
 #+end_src
 ** Emmet-mode
 # HTML,CSS package
 #+begin_src emacs-lisp
-(require 'emmet-mode)
-;; Enable emmet-mode in HTML and CSS
-(add-hook 'html-mode-hook #'emmet-mode)
-(add-hook 'css-mode-hook #'emmet-mode)
-;; Optional: Configure emmet-mode (e.g., JSX className)
-(setq emmet-expand-jsx-className? t)
+  ;; (require 'emmet-mode)
+  ;; ;; Enable emmet-mode in HTML and CSS
+  ;; (add-hook 'html-mode-hook #'emmet-mode)
+  ;; (add-hook 'css-mode-hook #'emmet-mode)
+  ;; ;; Optional: Configure emmet-mode (e.g., JSX className)
+  ;; (setq emmet-expand-jsx-className? t)
+#+end_src
+** Org Presentation
+# using ox-reveal and htmlize
+#+begin_src emacs-lisp
+  (use-package ox-reveal)
+  (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
+  (use-package htmlize)
 #+end_src
 * My Functions
 ** Load-random-theme
@@ -237,8 +265,9 @@ create-lockfiles nil)
       doom-palenight)
     )
 
-  ;;function declaretion
+  ;; function declaretion
   (defun load-random-theme()
+    (interactive)
     (let ( (randomTheme (nth (random (length themes)) themes)) )
       ;;disable previous theme
       (mapc #'disable-theme custom-enabled-themes)
@@ -247,19 +276,10 @@ create-lockfiles nil)
     )
   )
 
-  ;;function call
+  ;; function call
   (load-random-theme)
 #+end_src
-** Java-println
-#+begin_src emacs-lisp
-  (defun java-println ()
-    (interactive)
-    (insert "System.out.println();")
-   )
-  
-  (global-set-key (kbd "C-c p") 'java-println)
-#+end_src
-** Disable linenumber specific buffers
+** Disable lineNumber specific buffers
 #+begin_src emacs-lisp
   (add-hook 'after-change-major-mode-hook
 	    (lambda ()
