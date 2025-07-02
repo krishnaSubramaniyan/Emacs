@@ -19,11 +19,11 @@
 #+end_src
 ** Themes
 #+begin_src emacs-lisp
-  ;(load-theme wombat t)
+  ;;(load-theme 'wombat t)
 #+end_src
 ** Font Configuration
 #+begin_src emacs-lisp
-  (set-face-attribute 'default nil :font "Ubuntu Mono" :height 230)
+  (set-face-attribute 'default nil :font "Ubuntu Sans Mono" :weight 'light :height 230)
 #+end_src
 ** Cursor
 #+begin_src emacs-lisp
@@ -38,8 +38,8 @@
 #+begin_src emacs-lisp
   (setq
    make-backup-files nil
-  auto-save-default nil
-  create-lockfiles nil)
+   auto-save-default nil
+   create-lockfiles nil)
 #+end_src
 ** Y or N instead of Yes or No
 #+begin_src emacs-lisp
@@ -57,14 +57,14 @@
   ;;dired buffers
   (setq global-auto-revert-non-file-buffers t)
 
-  ;;disable verbose
-  (setq auto-revert-verbose nil)
+  ;;enable verbose
+  (setq auto-revert-verbose t)
 #+end_src
 ** Registers
 #+begin_src emacs-lisp
-  (set-register ?E '(file . "~/.config/emacs/default/config.org"))
-  (set-register ?I '(file . "~/.config/i3/config_lenovo"))
-  (set-register ?P '(file . "~/plan.org"))
+  (set-register ?E '(file . "~/.emacs.d/config.org"))
+  (set-register ?I '(file . "~/.config/i3/config"))
+  (set-register ?P '(file . "~/Git/CompetetiveProgramming/run.py"))
 #+end_src
 ** Buffers
 *** Buffer switching
@@ -105,6 +105,10 @@
 *** Random-load-theme
 #+begin_src emacs-lisp
   (global-set-key (kbd "C-c t") 'load-random-theme)
+#+end_src
+*** Eshell
+#+begin_src emacs-lisp
+  (global-set-key (kbd "C-c e") 'eshell)
 #+end_src
 ** Dired
 #+begin_src emacs-lisp
@@ -244,9 +248,9 @@
 ** Org Presentation
 # using ox-reveal and htmlize
 #+begin_src emacs-lisp
-  (use-package ox-reveal)
-  (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js")
-  (use-package htmlize)
+  ;; (use-package ox-reveal)
+  ;; (use-package htmlize)
+  ;; (setq org-reveal-root "https://cdn.jsdelivr.net/npm/reveal.js") 
 #+end_src
 * My Functions
 ** Load-random-theme
